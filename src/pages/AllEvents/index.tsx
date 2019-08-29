@@ -37,18 +37,10 @@ export default class AllEvents extends React.Component<Props, State> {
     optionsForTextInput:[]
   }
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.setState({ loading: true, filters:{...this.state.filters, myEvents:this.props.myEvents} }, () => { console.log("STATE:::: ", this.state) });
     this.getEventsByDate()
     this.getOptionsForTextInput()
-  }
-
-  onlyMyEvents = () => {
-    return this.state.filters.myEvents;
   }
 
   async getEventsByDate() {
@@ -62,11 +54,11 @@ export default class AllEvents extends React.Component<Props, State> {
 
   async getOptionsForTextInput() {
     const result = await dataHub.getOptionsForTextInput()
-    if (result.error) {
-      this.setState({error:result.error, loading: false})
-      return
-    }
     this.setState({optionsForTextInput:result})
+  }
+
+  onlyMyEvents = () => {
+    return this.state.filters.myEvents;
   }
 
   getButtonText() {
@@ -97,18 +89,8 @@ export default class AllEvents extends React.Component<Props, State> {
   }
 
   handleTimeRangeChange = (ev) => {
-    const option: number = ev.target.value
-    const timeTable = {
-      none:{timeRangeStart:undefined, timeRangeEnd: undefined},
-      morning:{timeRangeStart:6, timeRangeEnd: 12},
-      afternoon:{timeRangeStart:12, timeRangeEnd: 17},
-      evening:{timeRangeStart:17, timeRangeEnd: 21},
-      night:{timeRangeStart:21, timeRangeEnd: 6}
-    }
-    console.log(ev)
-    console.log("VALUE: ", option, timeTable[option].timeRangeStart,
-                  timeTable[option].timeRangeEnd)
-    console.log("handle change time!")
+    const option = ev.target.value
+    const timeTable = dataHub.timeTable
     this.setState(prevState => {
       return {
         filters: {
@@ -116,16 +98,6 @@ export default class AllEvents extends React.Component<Props, State> {
                   timeRangeStart: timeTable[option].timeRangeStart,
                   timeRangeEnd: timeTable[option].timeRangeEnd
                 }
-      };
-    }, this.getEventsByDate);
-  }
-
-  handleTxtSearchChange = (ev) => {
-    console.log(ev)
-    const val = ev.target.value;
-    this.setState(prevState => {
-      return {
-        filters: {...prevState.filters, txtSearch: val}
       };
     }, this.getEventsByDate);
   }
@@ -138,6 +110,7 @@ export default class AllEvents extends React.Component<Props, State> {
     }, this.getEventsByDate);
   }
 
+  /* render the events grouped by date - is it possible to refactor with {children} prop */
   renderEventGroupList = () => {
     if (Object.keys(this.state.events).length === 0) {
       if (this.onlyMyEvents()) {
@@ -159,15 +132,18 @@ export default class AllEvents extends React.Component<Props, State> {
 
   render() {
 
+    /* if loading return loading state */
     if (this.state.loading) {
       return <div className="te-ta-c te-p-40">Loading ...</div>
     }
 
+    /* if an error occurs print it */
     if (this.state.error) {
       return  <div>
                 <h1>Error</h1>
                 <div>
-                  {JSON.stringify(this.state.error)}
+                  <p>This should't happen, but I can explain...</p>
+                  <p>{JSON.stringify(this.state.error)}</p>
                 </div>
               </div>
     }

@@ -110,14 +110,16 @@ export default class Event extends React.Component<Props, State> {
     return  (
       <React.Fragment>
         <div className="te-pv-8 te-event">
-          <div className="te-hour">
-            <div className="te-hour-text">
-              {this.getTime()}
+          <div className="te-all-text">
+            <div className="te-hour">
+              <div className="te-hour-text">
+                {this.getTime()}
+              </div>
             </div>
-          </div>
-          <div className="te-p-16 te-text">
-            <h2 className="te-title te-m-0">{this.getTitle()} {this.renderFreeBadge()}</h2>
-            <p className="te-description te-mb-0 fc-gray-7">{this.renderDescription()}</p>
+            <div className="te-p-16 te-text">
+              <h2 className="te-title te-m-0">{this.getTitle()} {this.renderFreeBadge()}</h2>
+              <p className="te-description te-mb-0 fc-gray-7">{this.renderDescription()}</p>
+            </div>
           </div>
           {this.renderButton()}
         </div>

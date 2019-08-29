@@ -34,14 +34,16 @@ body {
   display: flex;
   overflow: hidden;
 }
+.te-event .te-all-text {
+  display: flex;
+  overflow: hidden;
+  width: 750;
+}
 .te-event:not(:last-child){
   border-bottom: 1px solid #37454d;
 }
 .te-event .te-text {
   width: 600px;
-}
-.te-event .te-text .te-description {
-  font-weight: lighter;
 }
 .te-event .te-hour {
   width: 150px;
@@ -54,6 +56,9 @@ body {
   transform: translateY(-50%);
   font-weight: bold;
 }
+.te-event .te-text .te-description {
+  font-weight: lighter;
+}
 .te-event .te-button {
   width: 300px;
   position: relative;
@@ -63,6 +68,20 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
+}
+@media screen and (max-width: 576px) {
+  .te-event {
+    display: block;
+  }
+  .te-event .te-hour {
+    border-right: 1px solid #9ba8a6;
+    margin: 16px 0;
+  }
+  .te-event .te-button {
+    width: 100%;
+    display: inline-block;
+    padding: 32px 0 24px;
+  }
 }
 
 /* te-modal */
