@@ -11,7 +11,7 @@ type State = {
 };
 
 type Props = {
-  logged?: String
+  myEvents?: boolean
 };
 
 export default class AllEvents extends React.Component<Props, State> {

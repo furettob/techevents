@@ -1,6 +1,4 @@
 import * as React from 'react'
-import Event from '../../components/Event';
-import {EventType} from '../../utils/types';
 import Switch from "react-switch";
 
 type State = {

@@ -19,10 +19,16 @@ body {
 .te-events-by-date h2 {
   font-size: 16px;
 }
-.te-event-group {
+.te-event-group,
+.te-no-events {
   background-color: #fff;
   border: 1px solid #37454d;
   padding: 0 16px;
+}
+.te-no-events {
+  margin-top: 40px;
+  padding: 40px;
+  text-align: center;
 }
 .te-event {
   display: flex;
@@ -287,6 +293,14 @@ body {
     content: ' ';
     display: block;
   }
+}
+.te-cta, a.te-cta,
+a.te-cta:visited,
+a.te-cta:hover,
+a.te-cta:focus,
+a.te-cta:active {
+  color: #127fab;
+  font-weight: bold;
 }
 .te-btn-primary, .te-btn-alternate {
   border-radius: 2px;

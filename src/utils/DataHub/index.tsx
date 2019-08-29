@@ -154,7 +154,7 @@ export async function signUpToEvent(event: EventType) {
   }
 }
 
-function getMyEvents() {
+export function getMyEvents() {
   let myEvents: number[] = JSON.parse(localStorage.getItem("myEvents") || "[]")
   return myEvents
 }

@@ -4,9 +4,12 @@ import EventGroup from '../../components/EventGroup';
 import {EventType, EventFilterType} from '../../utils/types';
 import Filters from '../../components/Filters';
 import FilterFree from '../../components/FilterFree';
-import TextInput from 'react-autocomplete-input';
+import FilterTimeRange from '../../components/FilterTimeRange';
+import FilterTextSearch from '../../components/FilterTextSearch';
 import 'react-autocomplete-input/dist/bundle.css';
- 
+import { Link } from 'react-router-dom';
+
+
 type State = {
   filters: EventFilterType, 
   error?: Object,
@@ -16,28 +19,36 @@ type State = {
 };
 
 type Props = {
-  logged?: String
+  myEvents?: boolean
 };
 
 export default class AllEvents extends React.Component<Props, State> {
   state = {
     filters:{
-      myEvents:false,
+      myEvents:this.props.myEvents,
       onlyFreeEvents:false,
       txtSearch:"",
       timeRangeStart:undefined,
       timeRangeEnd:undefined
     },
-    optionsForTextInput:[],
-    events: [],
     error: undefined,
-    loading: true
+    events: [],
+    loading: true,
+    optionsForTextInput:[]
+  }
+
+  constructor(props: Props) {
+    super(props);
   }
 
   componentDidMount() {
-    this.setState({ loading: true });
+    this.setState({ loading: true, filters:{...this.state.filters, myEvents:this.props.myEvents} }, () => { console.log("STATE:::: ", this.state) });
     this.getEventsByDate()
     this.getOptionsForTextInput()
+  }
+
+  onlyMyEvents = () => {
+    return this.state.filters.myEvents;
   }
 
   async getEventsByDate() {
@@ -58,8 +69,23 @@ export default class AllEvents extends React.Component<Props, State> {
     this.setState({optionsForTextInput:result})
   }
 
+  getButtonText() {
+    return this.onlyMyEvents() ? "Cancel" : "SignUp"
+  }
+
+  getButtonCallback() {
+    return this.onlyMyEvents() ?
+    this.onCancelFromEventCallback :
+    this.onSignupClickedCallback
+  }
+
   onSignupClickedCallback = () => {
     console.log("onSignupClickedCallback")
+  }
+
+  onCancelFromEventCallback = () => {
+    console.log("onCancelFromEventCallback")
+    this.getEventsByDate()
   }
 
   handleFilterFreeChange = () => {
@@ -112,6 +138,25 @@ export default class AllEvents extends React.Component<Props, State> {
     }, this.getEventsByDate);
   }
 
+  renderEventGroupList = () => {
+    if (Object.keys(this.state.events).length === 0) {
+      if (this.onlyMyEvents()) {
+        return <div className="te-no-events"><p>You are not signed up to any event matching this search.</p><p>Make a new search or</p><p><Link className="te-cta" to={"/allevents"}>Find your event here!</Link></p></div>
+      } else {
+        return <div className="te-no-events"><p>There are no events matching your request.</p><p>Make a new one or come back later :)</p></div>
+      }
+    }
+    return Object.keys(this.state.events).map( (timestamp, index) => {
+          return  <EventGroup
+            key={timestamp + "_" + String(index)}
+            title={this.state.events[timestamp].title}
+            date={this.state.events[timestamp].date}
+            events={this.state.events[timestamp].events}
+            buttonType={this.getButtonText()}
+            buttonCallback={this.getButtonCallback()}
+          />
+  })}
+
   render() {
 
     if (this.state.loading) {
@@ -132,37 +177,10 @@ export default class AllEvents extends React.Component<Props, State> {
         <h1>All Events</h1>
         <Filters>
           <FilterFree handleFilterFreeChange={this.handleFilterFreeChange} onlyFreeEvents={this.state.filters.onlyFreeEvents}/>
-          <div className={"te-time-range-select"}>
-            <select className={"te-fs-16 te-p-16" + (this.state.filters.timeRangeStart ? "" : " te-no-value")} onChange={ (ev) => { this.handleTimeRangeChange(ev) }} defaultValue={""}>
-              {/*  morning (6am - 12 pm), afternoon (12pm - 17pm), evening (17pm - 21pm) or night (21pm - 6am) */}
-              <option value={"none"}>Choose day time</option>
-              <option value={"morning"}>Morning</option>
-              <option value={"afternoon"}>Afternoon</option>
-              <option value={"evening"}>Evening</option>
-              <option value={"night"}>Night</option>
-            </select>
-          </div>
-          <div className={"te-text-search"}>
-            <TextInput
-              Component={"input"}
-              placeholder={"Search"}
-              options={this.state.optionsForTextInput}
-              trigger={""}
-              matchAny={true}
-              onChange={this.handleTxtWithSuggestionSearchChange}
-            />
-          </div>
+          <FilterTimeRange handleTimeRangeChange={this.handleTimeRangeChange} timeRangeStart={this.state.filters.timeRangeStart}/>
+          <FilterTextSearch handleTxtWithSuggestionSearchChange={this.handleTxtWithSuggestionSearchChange} optionsForTextInput={this.state.optionsForTextInput} />
         </Filters>
-        {Object.keys(this.state.events).map( (timestamp, index) => {
-          return  <EventGroup
-            key={timestamp + "_" + String(index)}
-            title={this.state.events[timestamp].title}
-            date={this.state.events[timestamp].date}
-            events={this.state.events[timestamp].events}
-            buttonType="SignUp"
-            buttonCallback={this.onSignupClickedCallback}
-          />
-        })}
+        { this.renderEventGroupList()}
       </div>
     );
   }
