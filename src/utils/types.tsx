@@ -6,8 +6,12 @@ export type EventType = {
   isFree: boolean,
   city: number,
   cityName: string
-}
+};
 
 export type EventFilterType = {
-  myEvents?: boolean
+  myEvents?: boolean,
+  onlyFreeEvents?: boolean,
+  txtSearch?:string,
+  timeRangeStart?:number,
+  timeRangeEnd?:number,
 }

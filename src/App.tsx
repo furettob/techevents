@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
 
 //import logo from './logo.svg';
 import './te.css';
@@ -14,9 +14,12 @@ const App: React.FC = () => {
         <Router>
           <Navigation/>
           <div className="te-content">
-            <Route exact path="/allevents" component={AllEvents} />
-            <Route exact path="/myevents" component={MyEvents} />
-            <Redirect from="/" to="/allevents" />
+            <Switch>
+              <Route path="/allevents" component={AllEvents} />
+              <Route path="/myevents" component={MyEvents} />
+              <Route render={() => (<Redirect to="/allevents" />)}/>
+            </Switch>
+
           </div>
         </Router>
       </div>

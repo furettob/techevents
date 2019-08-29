@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as dataHub from '../../utils/DataHub';
 import EventGroup from '../../components/EventGroup';
-import EventType from '../../components/Event';
+import {EventType, EventFilterType}  from '../../utils/types';
 
 type State = {
   filter?: String, 
@@ -31,13 +31,18 @@ export default class AllEvents extends React.Component<Props, State> {
     this.getEvents()
   }
 
-  async getEvents() {
-    const result = await dataHub.getEventsByDate()
+  getEvents = async () => {
+    const result = await dataHub.getEventsByDate({myEvents:true})
     if (result.error) {
       this.setState({error:result.error, loading: false})
       return
     }
     this.setState({events:result, loading: false})
+  }
+
+  onCancelFromEventCallback = () => {
+    console.log("onCancelFromEventCallback")
+    this.getEvents()
   }
 
   render() {
@@ -57,14 +62,15 @@ export default class AllEvents extends React.Component<Props, State> {
 
     return (
       <div>
-        <h1>All Events</h1>
+        <h1>My Events</h1>
         {Object.keys(this.state.events).map( (timestamp, index) => {
           return  <EventGroup
             key={timestamp + "_" + String(index)}
             title={this.state.events[timestamp].title}
             date={this.state.events[timestamp].date}
             events={this.state.events[timestamp].events}
-            buttonType="SignUp"
+            buttonType="Cancel"
+            buttonCallback={this.onCancelFromEventCallback}
           />
         })}
       </div>

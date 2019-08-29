@@ -5,10 +5,13 @@ body {
   background-color: #ebeced;
   font-family: sans-serif, Arial;
 }
+:focus {
+  outline: 0;
+}
 .te-content {
   max-width: 600px;
   margin: auto;
-  padding: 8px;
+  padding: 104px 8px;
 }
 .te-events-by-date {
   margin-top: 32px;
@@ -35,7 +38,7 @@ body {
   font-weight: lighter;
 }
 .te-event .te-hour {
-  width: 100px;
+  width: 150px;
   position: relative;
 }
 .te-event .te-hour .te-hour-text {
@@ -46,7 +49,7 @@ body {
   font-weight: bold;
 }
 .te-event .te-button {
-  width: 200px;
+  width: 300px;
   position: relative;
 }
 .te-event .te-button .te-button-inner {
@@ -88,6 +91,9 @@ body {
   left: 0;
   right: 0;
   z-index: 10;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(55,69,77,1);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(55,69,77,1);
+  box-shadow: 0px 0px 10px 0px rgba(55,69,77,1);
 }
 .te-navigation .te-nav-inner {
   max-width: 600px;
@@ -135,6 +141,107 @@ body {
   font-weight: bold;
 }
 
+/* filters */
+.te-filters-row {
+  padding: 24px;
+  background-color: #fff;
+  border: 1px solid #37454d;
+  padding: 16px;
+  text-align: center;
+}
+.te-switch-group {
+  text-align: center;
+  display: inline-block;
+  padding: 24px 32px;
+}
+.te-switch-group .te-toggle-label,
+.te-switch-group .te-switch-wrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.te-switch-group .te-toggle-label {
+  color: #9ba8a6;
+  transition: all .4s ease-in-out
+}
+.te-switch-group .te-toggle-label.te-on.te-selected {
+  color: #458314;
+  font-weight: bold;
+}
+.te-switch-group .te-toggle-label.te-off.te-selected {
+  color: #127fab;
+  font-weight: bold;
+}
+.te-time-range-select {
+  display: inline-block;
+  padding: 16px 32px;
+}
+.te-time-range-select select {
+  background:url("/img/te-select-arrow.png");
+  background-repeat:no-repeat;
+  background-position: right 12px top 16px;
+  background-size: 16px 12px;
+  padding:12px;
+  padding-right: 36px;
+  width:auto;
+  font-size:16px;
+  border-radius:0;
+  -webkit-border-radius:0;
+  -webkit-appearance: none;
+  border: 1px solid #9ba8a6;
+  outline:0;
+  -webkit-transition:0.3s ease all;
+     -moz-transition:0.3s ease all;
+      -ms-transition:0.3s ease all;
+       -o-transition:0.3s ease all;
+          transition:0.3s ease all;
+}
+.te-time-range-select select.te-no-value {
+  color: #9ba8a6;
+}
+@media screen and (max-width: 576px) {
+  .te-time-range-select {
+    display: block;
+    padding: 16px 0;
+  }
+  .te-time-range-select select {
+    width: 100%
+  }
+}
+
+.te-text-search {
+  padding: 16px 0;
+}
+.te-text-search input {
+  background:url("/img/te-search.png");
+  background-repeat:no-repeat;
+  background-position: right 12px top 16px;
+  background-size: 16px 12px;
+  padding:12px;
+  padding-right: 36px;
+  width:100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size:16px;
+  border-radius:0;
+  -webkit-border-radius:0;
+  -webkit-appearance: none;
+  border: 1px solid #9ba8a6;
+  outline:0;
+  -webkit-transition:0.3s ease all;
+     -moz-transition:0.3s ease all;
+      -ms-transition:0.3s ease all;
+       -o-transition:0.3s ease all;
+          transition:0.3s ease all;
+}
+.te-text-search input::placeholder {
+  color: #9ba8a6;
+}
+.te-text-search .react-autocomplete-input > li.active {
+  background-color: #127fab;
+}
 /************************************************************************/
 /* DESIGN SYSTEM
 /************************************************************************/
@@ -184,20 +291,66 @@ body {
 .te-btn-primary, .te-btn-alternate {
   border-radius: 2px;
 }
-.te-btn-primary,
-.te-btn-alternate {
+.te-btn-primary {
   border: 2px solid;
   padding: 8px 16px;
   text-align: center;
   font-weight: bold;  
 }
-.te-btn-primary, a.te-btn-primary {
-  background: #fff;
+.te-btn-blue {
+  background-color: transparent;
   border-color: #127fab;
   color: #127fab;
 }
+.te-btn-blue:hover {
+  background-color: #127fab;
+  color: #fff
+}
+.te-btn-green {
+  background-color: #458314;
+  border-color: #458314;
+  color: #fff;
+}
+.te-btn-green:hover {
+  background-color: #458314;
+  color: #fff;
+}
+.te-btn-orange {
+  background-color: transparent;
+  border-color: #f28e24;
+  color: #f28e24;
+}
+.te-btn-orange:hover {
+  background-color: #f28e24;
+  color: #fff;
+}
+.te-btn-red {
+  background-color: transparent;
+  border-color: #c74b36;
+  color: #c74b36;
+}
+.te-btn-red:hover {
+  background-color: #c74b36;
+  color: #fff;
+}
+.te-btn-abandonEvent {
+  background-color: transparent;
+  border-color: #458314;
+  color: #458314; 
+}
+.te-btn-abandonEvent::before {
+  content: "You are in"
+}
+.te-btn-abandonEvent:hover {
+  background-color: #c74b36;
+  border-color: #c74b36;
+  color: #fff; 
+}
+.te-btn-abandonEvent:hover::before {
+  content: "Cancel"
+}
 .te-btn-alternate {
-  background: transparent;
+  background-color: transparent;
   border-color: #0063ed;
   color: #0063ed;
 }
@@ -210,16 +363,6 @@ body {
   min-width: 60%;
   margin: auto;
 }
-.te-btn-primary:hover, a.te-btn-primary:hover {
-  border-color: #127fab;
-  background-color: #127fabff;
-  color: #fff
-}
-.te-btn-alternate:hover, a.te-btn-alternate:hover {
-  background: #0063ed;
-  border-color: #0063ed;
-  color: #fff;
-}
 
 /* COLORS */
 .te-bg-blue {
@@ -231,16 +374,6 @@ body {
 }
 .te-blue {
     color: #0063ed;
-}
-.te-bg-filo {
-    background-color: #ff3545;
-}
-.te-bs-filo {
-    border-style: solid;
-    border-color: #ff3545;
-}
-.te-filo {
-    color: #ff3545;
 }
 .te-bg-black {
     background-color: #000;

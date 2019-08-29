@@ -2,7 +2,7 @@ import * as React from 'react'
 import Moment from 'moment';
 import SignUpEventModal from '../../components/SignUpEventModal'
 import * as dataHub from '../../utils/DataHub';
-import {EventType, EventFilterType} from '../../utils/types';
+import {EventType} from '../../utils/types';
 
 type State = {
   modalVisible: boolean
@@ -11,6 +11,7 @@ type State = {
 type Props = {
   event: EventType,
   buttonType?: string
+  buttonCallback: () => void
 };
 
 export default class Event extends React.Component<Props, State> {
@@ -21,6 +22,12 @@ export default class Event extends React.Component<Props, State> {
   onSignUpClick = () => {
     console.log("on sign up click")
     this.setState({modalVisible:true})
+  }
+
+  onCancelClick = () => {
+    console.log("on cancel up click")
+    dataHub.cancelFromEvent(this.props.event)
+    this.props.buttonCallback()
   }
 
   closeModal = () => {
@@ -44,7 +51,7 @@ export default class Event extends React.Component<Props, State> {
       return (
         <div className="te-button">
           <div className="te-button-inner">
-            <button className="te-btn-primary te-btn-extended te-fs-16" onClick={this.onSignUpClick}>Sign Up</button>
+            <button className="te-btn-primary te-btn-blue te-btn-extended te-fs-16" onClick={this.onSignUpClick}>Sign Up</button>
           </div>
         </div>
       )
@@ -53,7 +60,7 @@ export default class Event extends React.Component<Props, State> {
       return (
         <div className="te-button">
           <div className="te-button-inner">
-            <button className="te-btn-primary te-btn-extended te-fs-16" onClick={this.onSignUpClick}>Cancel</button>
+            <button className="te-btn-extended te-fs-16 te-btn-primary te-btn-abandonEvent" onClick={this.onCancelClick}></button>
           </div>
         </div>
       )

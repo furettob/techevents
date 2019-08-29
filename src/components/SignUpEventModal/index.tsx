@@ -30,7 +30,7 @@ const ModalContent = ({
             </div>
             <div className="te-button-inner te-ta-r te-pt-16">
               <button onClick={onClose} className="te-fs-16 te-btn-primary te-btn-orange">Cancel</button>
-              <button tabIndex={1} onClick={onSubmitInner} className="te-ml-24 te-fs-16 te-btn-primary">Join</button>
+              <button tabIndex={1} onClick={onSubmitInner} className="te-ml-24 te-fs-16 te-btn-primary te-btn-blue">Join</button>
             </div>
             {/*<svg viewBox="0 0 40 40" className="c-modal__close-icon">
               <path d="M 10,10 L 30,30 M 30,10 L 10,30"></path>

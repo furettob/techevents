@@ -8,8 +8,9 @@ type State = {
 type Props = {
   title?: String, 
   date?: String, 
-  events: Array<EventType>
-  buttonType?: string
+  events: Array<EventType>,
+  buttonType?: string,
+  buttonCallback: () => void
 };
 
 export default class EventGroup extends React.Component<Props, State> {
@@ -21,7 +22,7 @@ export default class EventGroup extends React.Component<Props, State> {
                 <div className="te-event-group">
                   {
                     this.props.events.map( (event, index) => {
-                      return <Event key={event.id} event={event} buttonType={this.props.buttonType}/>
+                      return <Event key={event.id} event={event} buttonType={this.props.buttonType} buttonCallback={this.props.buttonCallback}/>
                     })
                   }
                 </div>

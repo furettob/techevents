@@ -1,5 +1,6 @@
 import Axios from 'axios' 
 import Moment from 'moment';
+import {EventType, EventFilterType}  from '../../utils/types';
 
 export function getAllEvents() {
   return Axios.get('/data/events.json').then(
@@ -23,7 +24,7 @@ export function getAllCities() {
   })
 }
 
-export async function getEventsByDate() {
+export async function getOptionsForTextInput() {
   let events = await getAllEvents()
   let cities = await getAllCities()
   if (events.error) {
@@ -32,16 +33,81 @@ export async function getEventsByDate() {
   if (cities.error) {
     return cities
   }
+  let options: string[] = []
+  // Adding the city name
+  events.forEach( event => {
+    if (options.indexOf(event.name) === -1) {
+      options.push(event.name)
+    }
+  })
+  cities.forEach( city => {
+    if (options.indexOf(city.name) === -1) {
+      options.push(city.name)
+    }
+  })
+  return options.sort()
+}
+
+export async function getEventsByDate(filter?: EventFilterType) {
+  let events = await getAllEvents()
+  let cities = await getAllCities()
+  if (events.error) {
+    return events
+  }
+  if (cities.error) {
+    return cities
+  }
+  /* All Filters */
+  /* My Events */
+  if (filter && filter.myEvents && filter.myEvents === true) {
+    events = events.filter(isMyEvent)
+  }
+  /* Free */
+  if (filter && filter.onlyFreeEvents && filter.onlyFreeEvents === true) {
+    events = events.filter(isFreeEvent)
+  }
+  /* Time range */
+  if (filter && filter.timeRangeStart && filter.timeRangeEnd) {
+    events = events.filter( event => { return isInTimeRange(event, filter.timeRangeStart, filter.timeRangeEnd)} )
+  }
+
   // Adding the city name
   events = events.map( event => {
     const cityObj = cities.find( city => { return city.id === event.city })
     event.cityName =  cityObj ? cityObj.name : "To be defined"
     return event
   })
+
+  /* Text */
+  if (filter && filter.txtSearch) {
+    events = events.filter( event => { return doesContainText(event, filter.txtSearch)} )
+  }
+
   // Ordering and grouping by date
   events = groupByDate(events)
   console.log(events)
   return events
+}
+
+function isMyEvent(event) {
+  return getMyEvents().indexOf(event.id) > -1
+}
+function isFreeEvent(event) {
+  return event.isFree
+}
+function isInTimeRange(event, timeRangeStart, timeRangeEnd) {
+  const h = Moment(new Date(event.startDate)).utcOffset(0).hours() // aaaaaaaa .hours()
+  if (timeRangeStart <= timeRangeEnd) {
+    return h >= timeRangeStart && h <= timeRangeEnd
+  } else {
+    return h >= timeRangeStart || h <= timeRangeEnd
+  }
+}
+function doesContainText(event, text) {
+  return (event.name && event.name.toUpperCase().indexOf(text.toUpperCase()) > -1) ||
+          (event.cityName && event.cityName.toUpperCase().indexOf(text.toUpperCase()) > -1) ||
+          (event.name && text.toUpperCase().indexOf(event.name.toUpperCase()) > -1) ||
+          (event.cityName && text.toUpperCase().indexOf(event.cityName.toUpperCase()) > -1)
 }
 
 function groupByDate(events) {
@@ -61,7 +127,7 @@ function getDate(event) {
 
 function getFormattedDateWithWeekday(event) {
   Moment.locale('en');
-  return Moment(new Date(event.startDate)).format('dddd Do MMMM')
+  return Moment(new Date(event.startDate)).utcOffset(0).format('dddd Do MMMM')
 }
 
 export function getFormattedDate(event) {
@@ -77,19 +143,28 @@ function compareDate(dateA, dateB) {
   return dateA.getTime() - dateB.getTime()
 }
 
-export async function signUpToEvent(event) {
+export async function signUpToEvent(event: EventType) {
   console.log("signing up to " + event.id)
-  let myEvents: number[] = JSON.parse(localStorage.getItem("myEvents") || "[]")
+  let myEvents: number[] = getMyEvents()
   if (myEvents.indexOf(event.id) === -1) {
     myEvents.push(event.id)
+    setMyEvents(myEvents)
   } else {
     console.log("Already signed up for event " + event.id)
   }
-  localStorage.setItem("myEvents", JSON.stringify(myEvents));
-  console.log(localStorage)
 }
 
-export async function cancelFromEvent(event) {
+function getMyEvents() {
+  let myEvents: number[] = JSON.parse(localStorage.getItem("myEvents") || "[]")
+  return myEvents
+}
+
+function setMyEvents(myEvents: number[]) {
+  localStorage.setItem("myEvents", JSON.stringify(myEvents));
+  console.log("Set my event: ", localStorage)
+}
+
+export function cancelFromEvent(event) {
   console.log("cancelling from " +  event.id)
   let myEvents: number[] = JSON.parse(localStorage.getItem("myEvents") || "[]")
   if (myEvents.indexOf(event.id) === -1) {
